@@ -2,9 +2,8 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/cmake/**
-/build/**
-
+/build
 *.jar
 
+#Visual Studio Code Files
 /.vscode

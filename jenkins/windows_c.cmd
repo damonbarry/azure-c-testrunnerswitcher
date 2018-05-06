@@ -7,8 +7,8 @@ set build-root=%~dp0..
 rem // resolve to fully qualified path
 for %%i in ("%build-root%") do set build-root=%%~fi
 
-rmdir /s /q %build-root%\cmake
-mkdir %build-root%\cmake
+rmdir /s /q %build-root%\build
+mkdir %build-root%\build
 if errorlevel 1 goto :eof
 
 set build-platform=Win32
@@ -35,7 +35,7 @@ goto args-loop
 
 :args-done
 
-cd %build-root%\cmake
+cd %build-root%\build
 
 if %build-platform% == Win32 (
 	echo ***Running CMAKE for Win32***
@@ -51,12 +51,11 @@ if %build-platform% == Win32 (
 	if errorlevel 1 goto :eof
 )
 
-msbuild /m testrunnerswitcher.sln /p:Configuration=Release
-if errorlevel 1 goto :eof
-msbuild /m testrunnerswitcher.sln /p:Configuration=Debug
-if errorlevel 1 goto :eof
+cmake --build . -- /m /p:Configuration=Release
+if not ERRORLEVEL==0 exit /b ERRORLEVEL
+
+cmake --build . -- /m /p:Configuration=Debug
+if not ERRORLEVEL==0 exit /b ERRORLEVEL
 
 ctest -C "debug" -V
 if errorlevel 1 goto :eof
-
-cd %build-root%
